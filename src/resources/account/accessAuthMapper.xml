@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="account.dao.AccessAuthMapper">
+	<insert id="grantAccess" parameterType="map">
+		insert into tbl_access_auth(
+			no,
+			client_no,
+			server_no,
+			todo,
+			anniversary
+		)values(
+			seq_access_auth.nextval,
+			#{client_no},
+			#{server_no},
+			#{todo},
+			#{anniversary}
+		)
+	</insert>
+	
+	<select id="myClientsList" parameterType="int" resultType="account.vo.AccessAuth">
+		select *
+		from tbl_access_auth
+		where server_no = #{server_no}
+	</select>
+
+	<select id="myServersList" parameterType="int" resultType="account.vo.AccessAuth">
+		select *
+		from tbl_access_auth
+		where client_no = #{client_no}
+	</select>
+	
+	<update id="modifyAccessOption" parameterType="map">
+		update tbl_access_auth
+		set
+			todo = #{todo},
+			anniversary = #{anniversary}
+		where client_no = #{client_no} and server_no = #{server_no}
+	</update>
+	
+	<update id="modifyAccessOptionAll" parameterType="map">
+		update tbl_access_auth
+		set
+			todo = #{todo},
+			anniversary = #{anniversary}
+		where server_no = #{server_no}
+	</update>
+	
+	<delete id="deleteAccess" parameterType="map">
+		delete 
+		from tbl_access_auth
+		where server_no = #{server_no} and client_no = #{client_no}
+	</delete>
+
+</mapper>

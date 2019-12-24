@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 일정 처리 SQL -->
+<mapper namespace="calendar.dao.CalendarMapper">
+
+<!-- ToDO -->
+<!-- ToDO 등록 -->
+	<insert id="insertTodo" parameterType="calendar.vo.ToDo">
+		INSERT INTO TBL_TODO(
+		no,
+		allday,
+		from_date,
+		to_date,
+		title,
+		content,
+		account_no
+		) VALUES(
+		SEQ_TODO.nextval,
+		#{allday},
+		to_date(#{from_date}, 'yyyy-MM-dd HH24:mi:ss'),
+		to_date(#{to_date}, 'yyyy-MM-dd HH24:mi:ss'),
+		#{title},
+		#{content},
+		#{account_no}
+		)
+	</insert>
+	
+<!-- ToDO list -->
+	<select id="selectTodo" resultType="calendar.vo.ToDo" parameterType="map">
+		select *
+		from tbl_todo
+		where
+			(account_no = #{account_no}
+    		or
+    		account_no = (
+    			select server_no
+    			from tbl_access_auth
+    			where client_no = #{account_no} and todo = '1'
+    		))
+    		<if test="hide == '1'">
+  		    and
+    		to_date - sysdate >= 0
+    		</if>
+    	order by no
+	</select>
+	
+<!-- ToDO read -->
+	<select id="readTodo" parameterType="map" resultType="calendar.vo.ToDo">
+		select
+			*
+		from 
+			TBL_TODO
+		where
+			(no=#{no}
+			and
+			account_no = #{account_no}
+    		or
+    		account_no = (
+    			select server_no
+    			from tbl_access_auth
+    			where client_no = #{account_no} and todo = '1'
+    		))
+    		<if test="hide == '1'">
+  		    and
+    		to_date - sysdate >= 0
+    		</if>
+	</select>
+	
+<!-- ToDO delete -->
+	<delete id="deleteTodo" parameterType="int">
+		delete
+		from
+			TBL_TODO
+		where
+			no=#{n}
+	</delete>
+	
+<!-- ToDO search -->
+	<select id="searchTodo" parameterType="hashmap" resultType="calendar.vo.ToDo">
+	select
+		*
+	from
+		TBL_TODO
+	where(
+	<if test = "column ==1">
+	to_date(#{words}, 'yyyy-MM-dd HH24:mi') BETWEEN from_date And to_date
+	</if>
+	<if test = "column ==2">
+	TITLE like '%'||#{words}||'%'
+	</if>
+	<if test = "column ==3">
+	CONTENT like '%'||#{words}||'%'
+	</if>	
+	and
+	account_no = #{account_no}
+  		or
+  		account_no = (
+  			select server_no
+  			from tbl_access_auth
+  			where client_no = #{account_no} and todo = '1'
+  		))
+  		<if test="hide == '1'">
+  		    and
+    		to_date - sysdate >= 0
+   		</if>
+	</select>
+	
+<!-- 	ToDO Update -->
+	<update id="updateTodo" parameterType="calendar.vo.ToDo">
+	update 
+	TBL_TODO
+	set 
+	allday = #{allday},
+	from_date 	= to_date(#{from_date}, 'yyyy-MM-dd HH24:mi:ss'),
+	to_date 	= to_date(#{to_date}, 'yyyy-MM-dd HH24:mi:ss'),
+	title = #{title},
+	content = #{content}
+	where
+	no = #{no}
+	</update>
+
+
+<!-- ANNIVERSARY -->
+<!-- ANNIVERSARY 등록 -->
+	<insert id="insertAnniversary" parameterType="calendar.vo.Anniversary">
+		INSERT INTO TBL_ANNIVERSARY(
+		NO,
+		MONTH,
+		DAY,
+		TITLE,
+		KIND,
+		account_no
+		) VALUES(
+		SEQ_ANNIVERSARY.nextval,
+		#{month},
+		#{day},
+		#{title},
+		#{kind},
+		#{account_no}
+		)
+	</insert>
+	
+<!-- ANNIVERSARY list -->
+	<select id="selectAnniversary" resultType="calendar.vo.Anniversary" parameterType="map">
+		select *
+		from tbl_anniversary
+		where
+			account_no = #{account_no}
+    		or
+    		account_no = (
+    			select server_no
+   				from tbl_access_auth
+    			where client_no = #{account_no} and anniversary = '1'
+    		)
+    	order by no
+	</select>
+	
+<!-- ANNIVERSARY read -->
+	<select id="readAnniversary" parameterType="map" resultType="calendar.vo.Anniversary">
+		select
+			*
+		from 
+			TBL_ANNIVERSARY
+		where
+			NO=#{no}
+			and
+			account_no = #{account_no}
+    		or
+    		account_no = (
+    			select server_no
+    			from tbl_access_auth
+    			where client_no = #{account_no} and todo = '1'
+    		)
+	</select>
+	
+<!-- ANNIVERSARY delete -->
+	<delete id="deleteAnniversary" parameterType="int">
+		delete
+		from
+			TBL_ANNIVERSARY
+		where
+			NO=#{no}
+	</delete>
+	
+<!-- ANNIVERSARY search -->
+	<select id="searchAnniversary" parameterType="hashmap" resultType="calendar.vo.Anniversary">
+	select
+		*
+	from
+		TBL_ANNIVERSARY
+	where
+	<if test = "column ==1">
+	MONTH = #{words}
+	</if>
+	<if test = "column ==2">
+	KIND = #{words}
+	</if>
+	<if test = "column ==3">
+	Title like '%'||#{words}||'%'
+	</if>
+		and
+	account_no = #{account_no}
+  		or
+  		account_no = (
+  			select server_no
+  			from tbl_access_auth
+  			where client_no = #{account_no} and todo = '1'
+  		)
+	</select>
+
+<!-- ANNIVERSARY update -->
+<update id="updateAnniversary" parameterType="calendar.vo.Anniversary">
+	update 
+	TBL_ANNIVERSARY
+	set 
+	MONTH = #{month},
+	DAY = #{day},
+	TITLE = #{title},
+	KIND = #{kind}
+	where
+	no = #{no}
+</update>
+
+</mapper>

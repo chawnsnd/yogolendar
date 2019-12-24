@@ -1,0 +1,30 @@
+로그인 전
+	login : 로그인
+	logout : 로그아웃
+	signup : 회원가입
+
+로그인 후
+	config : 옵션설정
+		auth : 권한부여목록
+		auth grant: 권한부여
+		auth modify: 권한수정
+		auth remove: 권한삭제
+		subscribe : 구독목록  
+		subscribe remove : 구독해제
+		passwd : 비밀번호 변경
+		hide : 지난 일정 숨김설정 변경
+		withdraw : 회원탈퇴
+
+	anniversary : 기념일 목록
+	anniversary search : 기념일 검색
+	anniversary read : 기념일 보기
+	anniversary enroll: 기념일 등록
+	anniversary modify: 기념일 수정
+	anniversary remove: 기념일 삭제
+
+	todo : 일정 목록
+	todo search : 일정 검색
+	todo read : 일정 보기
+	todo enroll: 일정 등록
+	todo modify: 일정 수정
+	todo remove: 일정 삭제
